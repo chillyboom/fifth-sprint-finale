@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-var ErrAmountOfElements = errors.New("wrong amount of elements passed")
-var ErrZeroOrNegative = errors.New("value is negative or 0")
-var ErrEmptyString = errors.New("empty string")
-var ErrWrongActivity = errors.New("неизвестный тип тренировки")
+var errAmountOfElements = errors.New("wrong amount of elements passed")
+var errZeroOrNegative = errors.New("value is negative or 0")
+var errEmptyString = errors.New("empty string")
+var errWrongActivity = errors.New("неизвестный тип тренировки")
 
 // Основные константы, необходимые для расчетов.
 const (
@@ -26,25 +26,25 @@ const (
 func parseTraining(data string) (int, string, time.Duration, error) {
 	splitData := strings.Split(data, ",")
 	if len(splitData) != 3 {
-		return 0, "", 0, ErrAmountOfElements
+		return 0, "", 0, errAmountOfElements
 	}
 	steps, err := strconv.Atoi(splitData[0])
 	if err != nil {
 		return 0, "", 0, err
 	}
 	if steps <= 0 {
-		return 0, "", 0, ErrZeroOrNegative
+		return 0, "", 0, errZeroOrNegative
 	}
 	activity := splitData[1]
 	if activity == "" {
-		return 0, "", 0, ErrEmptyString
+		return 0, "", 0, errEmptyString
 	}
 	duration, err := time.ParseDuration(splitData[2])
 	if err != nil {
 		return 0, "", 0, err
 	}
 	if duration <= 0 {
-		return 0, "", 0, ErrZeroOrNegative
+		return 0, "", 0, errZeroOrNegative
 	}
 	return steps, activity, duration, nil
 }
@@ -88,7 +88,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 			return "", err
 		}
 	default:
-		return "", ErrWrongActivity
+		return "", errWrongActivity
 	}
 
 	return fmt.Sprintf("Тип тренировки: %v\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", activity, durationHours, distance, speed, calories), nil
@@ -96,7 +96,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, ErrZeroOrNegative
+		return 0, errZeroOrNegative
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMinutes := duration.Minutes()
@@ -105,7 +105,7 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, ErrZeroOrNegative
+		return 0, errZeroOrNegative
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMinutes := duration.Minutes()

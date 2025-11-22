@@ -11,9 +11,9 @@ import (
 	"github.com/Yandex-Practicum/tracker/internal/spentenergy"
 )
 
-var ErrAmountOfElements = errors.New("wrong amount of elements passed")
-var ErrZeroOrNegative = errors.New("value is negative or 0")
-var ErrEmptyString = errors.New("empty string")
+var errAmountOfElements = errors.New("wrong amount of elements passed")
+var errZeroOrNegative = errors.New("value is negative or 0")
+var errEmptyString = errors.New("empty string")
 
 type DaySteps struct {
 	Steps    int
@@ -24,14 +24,14 @@ type DaySteps struct {
 func (ds *DaySteps) Parse(datastring string) (err error) {
 	splitData := strings.Split(datastring, ",")
 	if len(splitData) != 2 {
-		return ErrAmountOfElements
+		return errAmountOfElements
 	}
 	steps, err := strconv.Atoi(splitData[0])
 	if err != nil {
 		return err
 	}
 	if steps <= 0 {
-		return ErrZeroOrNegative
+		return errZeroOrNegative
 	}
 	ds.Steps = steps
 
@@ -40,7 +40,7 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 		return err
 	}
 	if duration <= 0 {
-		return ErrZeroOrNegative
+		return errZeroOrNegative
 	}
 	ds.Duration = duration
 	return nil

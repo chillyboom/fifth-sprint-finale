@@ -11,10 +11,10 @@ import (
 	"github.com/Yandex-Practicum/tracker/internal/spentenergy"
 )
 
-var ErrAmountOfElements = errors.New("wrong amount of elements passed")
-var ErrZeroOrNegative = errors.New("value is negative or 0")
-var ErrEmptyString = errors.New("empty string")
-var ErrWrongActivity = errors.New("неизвестный тип тренировки")
+var errAmountOfElements = errors.New("wrong amount of elements passed")
+var errZeroOrNegative = errors.New("value is negative or 0")
+var errEmptyString = errors.New("empty string")
+var errWrongActivity = errors.New("неизвестный тип тренировки")
 
 type Training struct {
 	Steps        int
@@ -26,20 +26,20 @@ type Training struct {
 func (t *Training) Parse(datastring string) (err error) {
 	splitData := strings.Split(datastring, ",")
 	if len(splitData) != 3 {
-		return ErrAmountOfElements
+		return errAmountOfElements
 	}
 	steps, err := strconv.Atoi(splitData[0])
 	if err != nil {
 		return err
 	}
 	if steps <= 0 {
-		return ErrZeroOrNegative
+		return errZeroOrNegative
 	}
 	t.Steps = steps
 
 	activity := splitData[1]
 	if activity == "" {
-		return ErrEmptyString
+		return errEmptyString
 	}
 	t.TrainingType = activity
 
@@ -48,7 +48,7 @@ func (t *Training) Parse(datastring string) (err error) {
 		return err
 	}
 	if duration <= 0 {
-		return ErrZeroOrNegative
+		return errZeroOrNegative
 	}
 	t.Duration = duration
 	return nil
@@ -56,7 +56,7 @@ func (t *Training) Parse(datastring string) (err error) {
 
 func (t Training) ActionInfo() (string, error) {
 	if t.TrainingType != "Ходьба" && t.TrainingType != "Бег" {
-		return "", ErrWrongActivity
+		return "", errWrongActivity
 	}
 	distance := spentenergy.Distance(t.Steps, t.Height)
 	speed := spentenergy.MeanSpeed(t.Steps, t.Height, t.Duration)
